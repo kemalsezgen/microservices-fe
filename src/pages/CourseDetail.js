@@ -1,21 +1,31 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { useParams } from "react-router-dom";
-import { useSelector } from 'react-redux';
+import { useSelector } from "react-redux";
+
+import {
+  GET_COURSE,
+  GET_USER,
+  ENROLL,
+  DELIST,
+  GET_STUDENTS_COURSES,
+} from "../api.js";
 
 const CourseDetail = () => {
-
   const { currentUser } = useSelector((state) => state.user);
 
   const [course, setCourse] = useState();
   const [instructor, setInstructor] = useState();
+  const [isEnrolled, setIsEnrolled] = useState(false);
   const { id } = useParams();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        //const currentPost = await axios.get(`/posts/${id}`)
-        //setPost(currentPost.data)
+        const currentCourse = await axios.get(GET_COURSE + id);
+        setCourse(currentCourse);
 
+        /*
         const currentCourse = {
             id: "1",
             title: "Pyhton 101",
@@ -23,12 +33,13 @@ const CourseDetail = () => {
             image:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png",
             insturcor: "kemalsezgen",
         }
+        */
 
-        setCourse(currentCourse)
-        setInstructor({_id: "123456", name: "kemal", email: "kemal@gmail.com", username: "kemalsezgen"})
+        //setCourse(currentCourse)
+        //setInstructor({_id: "123456", name: "kemal", email: "kemal@gmail.com", username: "kemalsezgen"})
 
-        //const user = await axios.get(`/users/find/${currentPost.data.userId}`)
-        //setPostOwner(user.data);
+        const instructor = await axios.get(GET_USER + currentCourse.userId);
+        setInstructor(instructor);
       } catch (err) {
         console.log("error", err);
       }
@@ -37,21 +48,39 @@ const CourseDetail = () => {
     fetchData();
   }, [id]);
 
-  const handleEnroll = () => {
-    try {
-      //const response = await axios.get('/enroll/${currentUser._id}/${course._id}');
-    } catch (error) {
-      console.log(error)
-    }
-  }
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const studentCourses = await axios.get(GET_STUDENTS_COURSES + currentUser.id);
+        const enrolled = studentCourses.some((c) => c.name === course.title);
+        setIsEnrolled(enrolled);
+      } catch (error) {
+        console.log(error);
+      }
+    };
 
-  const handleDelist = () => {
+    fetchData();
+  });
+
+  const handleEnroll = async () => {
     try {
-      //const response = await axios.get('/delist/${currentUser._id}/${course_id}');
+      const response = await axios.get(
+        ENROLL + currentUser.id + "/" + course.id
+      );
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
+
+  const handleDelist = async () => {
+    try {
+      const response = await axios.get(
+        DELIST + currentUser.id + "/" + course.id
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <>
@@ -61,13 +90,20 @@ const CourseDetail = () => {
             <div className="coursePage-header">
               {instructor ? (
                 <>
-                <h2>
-                  <a href={`/profile/${instructor._id}`}>{instructor.username}</a>
-                </h2>
-                {
-                  currentUser.username === "kemalsezgen" ? <button className="enrollButton" onClick={handleEnroll}>KAYDOL</button> 
-                  : <button className="delistButton" onClick={handleDelist}>KAYDINI SİL</button>
-                }
+                  <h2>
+                    <a href={`/profile/${instructor.id}`}>
+                      {instructor.username}
+                    </a>
+                  </h2>
+                  {isEnrolled ? (
+                    <button className="enrollButton" onClick={handleEnroll}>
+                      KAYDOL
+                    </button>
+                  ) : (
+                    <button className="delistButton" onClick={handleDelist}>
+                      KAYDINI SİL
+                    </button>
+                  )}
                 </>
               ) : (
                 "-"

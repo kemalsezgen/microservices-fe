@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useParams } from "react-router-dom";
+import axios from "axios";
 
 import Course from "../components/Course";
+import {GET_STUDENTS_COURSES} from "../api.js"
+import {GET_INSTRUCTORS_UPLOADED_COURSES} from "../api.js"
 
 const Profile = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -17,13 +20,15 @@ const Profile = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // const userProfile = await axios.get(`/users/find/${id}`)
-        // setUserProfile(userProfile.data)
+        const userProfile = await axios.get(`/users/find/${id}`)
+        setUserProfile(userProfile.data)
 
-        // setRole(userProfile.data.roleId)
+        setRole(userProfile.role)
 
-        //const posts = await axios.get(`http://localhost:5000/posts/user/all/${userProfile.data._id}`)
-        //setUserPosts(posts.data)
+        const courses = await axios.get(GET_STUDENTS_COURSES + userProfile.id)
+        setCourses(courses)
+
+        /*
         const allCourses = [
           {
             id: "1",
@@ -46,13 +51,15 @@ const Profile = () => {
             rate: "4.6",
           },
         ];
+        */
 
-        setCourses(allCourses);
+        //setCourses(allCourses);
         setLoading(false);
-        setRole(2);
+        //setRole(2);
 
-        if (role === 2) {
-          setUploadedCourses(allCourses);
+        if (role === "instructor") {
+          const instructorsCourses = await axios.get(GET_INSTRUCTORS_UPLOADED_COURSES + userProfile.id)
+          setUploadedCourses(instructorsCourses)
         }
 
       } catch (err) {
@@ -66,7 +73,7 @@ const Profile = () => {
   return (
     <>
       <div className="homepage-container">
-        {role === 1 ? (
+        {role === "student" ? (
           <h1>Hey student {currentUser.username}</h1>
         ) : (
           <h1>Hey insturactor {currentUser.username}</h1>

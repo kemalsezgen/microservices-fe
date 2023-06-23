@@ -6,6 +6,8 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { loginStart, loginSuccess, loginFailed } from '../redux/userSlice';
 
+import { REGISTER } from '../api.js'
+
 const Register = () => {
 
   const [name, setName] = useState('');
@@ -22,8 +24,8 @@ const Register = () => {
     e.preventDefault();
     dispatch(loginStart());
     try {
-      //const response = await axios.post('/auth/register', { name, surname, username, type, email, password });
-      dispatch(loginSuccess({name, surname, username, type, email, password}));
+      const response = await axios.post(REGISTER, {name, username, type, email, password});
+      dispatch(loginSuccess({name, username, type, email, password}));
       navigate('/');
     } catch (error) {
       dispatch(loginFailed());
@@ -51,7 +53,7 @@ const Register = () => {
 
           <div className='formInput'>
             <select value={type} name="type" onChange={e => setType(e.target.value)}>
-              <option value="1">Member</option>
+              <option value="1">Student</option>
               <option value="2">Instructor</option>
             </select>
           </div>

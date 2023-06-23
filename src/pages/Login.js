@@ -1,13 +1,14 @@
 import React, { useState } from "react";
-//import axios from "axios";
+import axios from "axios";
 
 import { useNavigate } from "react-router-dom";
 import { loginStart, loginSuccess, loginFailed } from '../redux/userSlice';
 import { useDispatch } from 'react-redux';
 
+import { LOGIN } from '../api.js'
 
 const Login = () => {
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState("");  
   const [loginFail, setLoginFail] = useState(false);
   const [password, setPassword] = useState("");
 
@@ -18,15 +19,12 @@ const Login = () => {
     e.preventDefault();
     dispatch(loginStart());
     try {
-      //const response = await axios.post('/auth/login', { email, password });
-      if (email === "kemal@gmail.com" && password === "123") {
-        dispatch(loginSuccess({_id: "123456", name: "kemal", email: "kemal@gmail.com", username: "kemalsezgen"}));
-        navigate("/");
-      } else {
-        setLoginFail(true);
-      }
+      const response = await axios.post(LOGIN, { email, password });
+      dispatch(loginSuccess(response));
+      navigate("/");
     } catch (error) {
       dispatch(loginFailed());
+      setLoginFail(true);
     }
   };
 
