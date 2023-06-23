@@ -1,38 +1,338 @@
-.App {
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --darkblue: #0b0039;
+}
+
+.nav {
+  background-color: #333;
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 2rem;
+  padding: 0 1rem;
+}
+
+.site-title {
+  font-size: 3rem;
+}
+
+.nav ul {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+  display: flex;
+  gap: 1rem;
+  font-size: 1.25rem;
+}
+
+ul {
+  list-style: none;
+}
+
+.nav a {
+  color: inherit;
+  text-decoration: none;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  padding: 0.25rem;
+}
+
+.nav li:hover {
+  background-color: #777;
+}
+
+.nav ul li {
+  margin-right: 10px;
+  position: relative;
+}
+
+.nav li:hover ul {
+  display: block;
+}
+
+.nav ul ul {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background-color: #eee;
+  padding: 10px;
+}
+
+.nav ul ul li {
+  margin: 0;
+}
+
+.nav ul ul a {
+  color: #333;
+}
+
+#user-name {
+  margin: 0 20px;
+}
+
+/* Login - Register Form */
+
+.login-container {
+  background-color: #33333391;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border: 2px solid var(--darkblue);
+  border-radius: 20px;
+  width: 400px;
+  color: var(--darkblue);
+  box-shadow: 10px 5px var(--darkblue);
+}
+
+.register-container {
+  margin-top: 32px;
+}
+
+.welcomeMessage {
+  text-align: center;
+  border-bottom: 2px solid var(--darkblue);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.loginForm {
   text-align: center;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+.loginLower {
+  margin-top: 20px;
+  text-align: center;
+  color: #d2d2d2;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+.loginButton {
+  width: 150px;
+  height: 40px;
+  border-radius: 10%;
+  background-color: var(--darkblue);
+  color: #d2d2d2;
+  font-size: 16px;
+  text-transform: uppercase;
+  margin-bottom: 20px;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+.formInput {
+  padding: 10px;
+}
+
+.formInput input {
+  padding: 8px;
+  font-size: 16px;
+  width: 250px;
+}
+
+.formInput select {
+  padding: 8px;
+  font-size: 16px;
+  width: 250px;
+}
+
+.redirectText {
+  font-size: 20px;
+  margin-bottom: 20px;
+}
+
+.redirectText a {
+  text-decoration: underline;
+  color: var(--darkblue);
+}
+
+/* Trainer Card */
+
+.courseCard {
+  width: 80%;
+  height: 172px;
+  border: 2px solid var(--darkblue);
+  background: #333;
+  margin-left: 10%;
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-areas: "trainerImage cardText cardText cardText cardText";
+}
+
+.coursePhoto {
+  grid-area: trainerImage;
+  width: 100%;
+}
+
+.coursePhoto img {
+  width: 100%;
+  height: 167px;
+  object-fit: cover;
+  padding: 5px;
+}
+
+.course-cardText {
+  grid-area: cardText;
+  padding: 20px;
+  word-break: break-word;
+}
+
+.course-cardText h3 {
+  margin: 0;
+  font-size: 24px;
+  color: #dfdfdf
+}
+
+.course-cardText a {
+  font-size: 24px;
+  color: #dfdfdf;
+  text-decoration: none;
+}
+
+.course-cardText hr {
+  border: none;
+  height: 1px;
+  background-color: black;
+  margin: 10px 0;
+}
+
+.course-cardText p {
+  color: #dfdfdf
+}
+
+/* Trainers */
+
+.course-container {
+  margin: 72px auto;
+  max-width: 1024px;
+  width: 96%;
+  border: 3px solid var(--darkblue);
+  box-shadow: 10px 5px var(--darkblue);
+}
+
+.course-container h1 {
+  text-align: center;
+  margin: 20px 0;
+  color: var(--darkblue)
+}
+
+.course-cardText h3 {
+  font-weight: 400;
+  text-transform: capitalize;
+}
+
+.courseCard:last-child {
+  margin-right: 0;
+}
+
+.course-cardTextTop {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+  justify-content: space-between;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid white;
+}
+
+#viewProfile a {
+  font-size: 16px;
+}
+
+.empty {
+  opacity: 0;
+}
+
+/* PostPage */
+
+.coursePage-container {
+  margin: 72px auto;
+  max-width: 1024px;
+  width: 96%;
+  margin-left: auto;
+  margin-right: auto;
+  border: 2px solid var(--darkblue);
+  padding: 16px 0;
+  box-shadow: 10px 5px var(--darkblue);
+}
+
+.coursePage-header {
+  display: flex;
+  justify-content: space-between;
+  margin-left: 16px;
+  margin-bottom: 16px;
+}
+
+.coursePage-container a {
+  text-decoration: none;
+  color: var(--darkblue)
+}
+
+.coursePage-photo {
+  width: 100%;
+}
+
+.coursePage-photo img {
+  width: 80%;
+  height: 480px;
+  object-fit: cover;
+  margin: auto 10%;
+}
+
+.coursePage-content {
+  margin: auto 8%;
+  padding: 16px 24px;
+}
+
+.coursePage-content h1 {
+  text-align: center;
+  text-decoration: underline;
+  font-size: 32px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.coursePage-content p {
+  font-size: 24px;
+  word-wrap: break-word;
+  color: var(--darkblue)
+}
+
+.enrollButton {
+  margin-right: 10px;
+  padding: 10px;
+  background-color: green;
   color: white;
+  font-size: 20px;
 }
 
-.App-link {
-  color: #61dafb;
+.delistButton {
+  margin-right: 10px;
+  padding: 10px;
+  background-color: red;
+  color: white;
+  font-size: 20px;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* Homepage */
+
+.homepage-container {
+  margin: 72px auto;
+  max-width: 1280px;
+  width: 96%;
+  margin-left: auto;
+  margin-right: auto;
+  border: 2px solid var(--darkblue);
+  padding: 16px 8px;
+  box-shadow: 10px 5px var(--darkblue);
+}
+
+/* About Us */
+
+.aboutUs {
+  font-size: 36px;
 }
