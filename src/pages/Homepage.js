@@ -97,7 +97,7 @@ const Home = () => {
             rate: "5"
           },
         ]; */
-        setCourses(allCourses);
+        setCourses(allCourses.data);
         setLoading(false);
       } catch (err) {
         console.log("error", err);

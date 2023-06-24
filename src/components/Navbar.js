@@ -24,7 +24,7 @@ export default function Navbar() {
         {
           currentUser ? (
             <li>
-              <a id="user-name" href={`/profile/${currentUser.username}`}>{`${currentUser.username}`}</a>
+              <a id="user-name" href={`/profile/${currentUser.id}`}>{`${currentUser.username}`}</a>
               <ul>
                 <li>
                   <a href='/' onClick={handleLogout}>Çıkış yap</a>

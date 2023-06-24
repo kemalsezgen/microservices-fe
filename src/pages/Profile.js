@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from "react";
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 import Course from "../components/Course";
-import {GET_STUDENTS_COURSES} from "../api.js"
-import {GET_INSTRUCTORS_UPLOADED_COURSES} from "../api.js"
+import { GET_STUDENTS_COURSES, GET_USER, GET_ALL_COURSE } from "../api.js";
+import { GET_INSTRUCTORS_UPLOADED_COURSES } from "../api.js";
 
 const Profile = () => {
   const { currentUser } = useSelector((state) => state.user);
   const { id } = useParams();
+  const navigate = useNavigate();
 
-  const [userProfile, setUserProfile] = useState(null);
+  const [userProfile, setUserProfile] = useState();
   const [isLoading, setLoading] = useState(true);
   const [courses, setCourses] = useState();
   const [uploadedCourses, setUploadedCourses] = useState();
@@ -20,48 +22,30 @@ const Profile = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userProfile = await axios.get(`/users/find/${id}`)
-        setUserProfile(userProfile.data)
+        const userProfileResponse = await axios.get(GET_USER + id);
+        const userProfile = userProfileResponse.data;
+        setUserProfile(userProfile);
 
-        setRole(userProfile.role)
+        const coursesResponse = await axios.get(
+          GET_STUDENTS_COURSES + userProfile.id
+        );
+        const coursesData = coursesResponse.data;
+        const enrolledCourseIds = coursesData.map((course) => course.courseId);
 
-        const courses = await axios.get(GET_STUDENTS_COURSES + userProfile.id)
-        setCourses(courses)
+        const allCoursesResponse = await axios.get(GET_ALL_COURSE);
+        const allCourses = allCoursesResponse.data;
+        const enrolledCourses = allCourses.filter((course) =>
+          enrolledCourseIds.includes(course.id)
+        );
+        setCourses(enrolledCourses);
 
-        /*
-        const allCourses = [
-          {
-            id: "1",
-            title: "Pyhton 101",
-            description:
-              "Bu kursta Python programlama diline giriş yapıyoruz. Bu kursta Python programlama diline giriş yapıyoruz. Bu kursta Python programlama diline giriş yapıyoruz. Bu kursta Python programlama diline giriş yapıyoruz.",
-            image:
-              "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png",
-            insturcor: "kemalsezgen",
-            rate: "4.5",
-          },
-          {
-            id: "2",
-            title: "Java 101",
-            description:
-              "Bu kursta Java programlama diline giriş yapıyoruz. Bu kursta Java programlama diline giriş yapıyoruz. Bu kursta Java programlama diline giriş yapıyoruz. Bu kursta Java programlama diline giriş yapıyoruz.",
-            image:
-              "https://upload.wikimedia.org/wikipedia/tr/thumb/2/2e/Java_Logo.svg/1200px-Java_Logo.svg.png",
-            insturcor: "kemalsezgen",
-            rate: "4.6",
-          },
-        ];
-        */
-
-        //setCourses(allCourses);
         setLoading(false);
-        //setRole(2);
 
-        if (role === "instructor") {
-          const instructorsCourses = await axios.get(GET_INSTRUCTORS_UPLOADED_COURSES + userProfile.id)
-          setUploadedCourses(instructorsCourses)
-        }
-
+        const instructorsCoursesResponse = await axios.get(
+          GET_INSTRUCTORS_UPLOADED_COURSES + id
+        );
+        const instructorsCourses = instructorsCoursesResponse.data;
+        setUploadedCourses(instructorsCourses);
       } catch (err) {
         console.log("error", err);
       }
@@ -73,33 +57,51 @@ const Profile = () => {
   return (
     <>
       <div className="homepage-container">
-        {role === "student" ? (
-          <h1>Hey student {currentUser.username}</h1>
-        ) : (
-          <h1>Hey insturactor {currentUser.username}</h1>
-        )}
-        <h3>Here is courses you enrolled: </h3>
-        <>
-          <div className="courses-container">
-            {isLoading ? (
-              <div>
-                <p>Loading...</p>
-              </div>
-            ) : (
-              <div>
-                <div className="courses">
-                  {courses.map((course, id) => (
-                    <Course key={id} course={course} />
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
-        </>
-
-        {role === 2 ? (
+        {userProfile && (
           <>
-            <h3>Here is courses you uploaded: </h3>
+            {userProfile.role === "student" ? (
+              <h1>student {userProfile.username}</h1>
+            ) : (
+              <>
+                <h1>instructor {userProfile.username}</h1>
+                <button
+                  className="uploadButton"
+                  onClick={() => navigate("/upload")}
+                >
+                  KURS YÜKLE
+                </button>
+              </>
+            )}
+          </>
+        )}
+        <h3>Here are the courses you enrolled in: </h3>
+        {courses && (
+          <>
+            <div className="courses-container">
+              {isLoading ? (
+                <div>
+                  <p>Loading...</p>
+                </div>
+              ) : (
+                <>
+                  <div>
+                    {courses && (
+                      <div className="courses">
+                        {courses.map((course, id) => (
+                          <Course key={id} course={course} />
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </>
+              )}
+            </div>
+          </>
+        )}
+
+        {userProfile && userProfile.role === "instructor" && (
+          <>
+            <h3>Here are the courses you uploaded: </h3>
             <>
               <div className="courses-container">
                 {isLoading ? (
@@ -108,18 +110,18 @@ const Profile = () => {
                   </div>
                 ) : (
                   <div>
-                    <div className="courses">
-                      {courses.map((course, id) => (
-                        <Course key={id} course={course} />
-                      ))}
-                    </div>
+                    {uploadedCourses && (
+                      <div className="courses">
+                        {uploadedCourses.map((course, id) => (
+                          <Course key={id} course={course} />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 )}
               </div>
             </>
           </>
-        ) : (
-          <div></div>
         )}
       </div>
     </>

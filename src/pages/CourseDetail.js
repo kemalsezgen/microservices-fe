@@ -16,57 +16,44 @@ const CourseDetail = () => {
 
   const [course, setCourse] = useState();
   const [instructor, setInstructor] = useState();
-  const [isEnrolled, setIsEnrolled] = useState(false);
+  const [isEnrolled, setIsEnrolled] = useState();
   const { id } = useParams();
 
+  const fetchData = async () => {
+    try {
+      const currentCourseResponse = await axios.get(GET_COURSE + id);
+      const currentCourse = currentCourseResponse.data;
+      setCourse(currentCourse);
+
+      const instructorResponse = await axios.get(
+        GET_USER + currentCourse.instructorId
+      );
+      const instructor = instructorResponse.data;
+      setInstructor(instructor);
+
+      const studentCoursesResponse = await axios.get(
+        GET_STUDENTS_COURSES + currentUser.id
+      );
+      const studentCourses = studentCoursesResponse.data;
+
+      const enrolled = studentCourses.some((c) => c.courseId === currentCourse.id);
+
+      setIsEnrolled(enrolled);
+    } catch (err) {
+      console.log("error", err);
+    }
+  };
+
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const currentCourse = await axios.get(GET_COURSE + id);
-        setCourse(currentCourse);
-
-        /*
-        const currentCourse = {
-            id: "1",
-            title: "Pyhton 101",
-            description: "Bu kursta Python programlama diline giriş yapıyoruz. Bu kursta Python programlama diline giriş yapıyoruz. Bu kursta Python programlama diline giriş yapıyoruz. Bu kursta Python programlama diline giriş yapıyoruz.",
-            image:"https://upload.wikimedia.org/wikipedia/commons/thumb/0/0a/Python.svg/640px-Python.svg.png",
-            insturcor: "kemalsezgen",
-        }
-        */
-
-        //setCourse(currentCourse)
-        //setInstructor({_id: "123456", name: "kemal", email: "kemal@gmail.com", username: "kemalsezgen"})
-
-        const instructor = await axios.get(GET_USER + currentCourse.userId);
-        setInstructor(instructor);
-      } catch (err) {
-        console.log("error", err);
-      }
-    };
-
     fetchData();
   }, [id]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const studentCourses = await axios.get(GET_STUDENTS_COURSES + currentUser.id);
-        const enrolled = studentCourses.some((c) => c.name === course.title);
-        setIsEnrolled(enrolled);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  });
-
   const handleEnroll = async () => {
     try {
-      const response = await axios.get(
-        ENROLL + currentUser.id + "/" + course.id
+      const response = await axios.post(
+        ENROLL + "?courseId=" + course.id + "&studentId=" + currentUser.id
       );
+      fetchData(); // Fetch updated data after enrollment
     } catch (error) {
       console.log(error);
     }
@@ -74,9 +61,7 @@ const CourseDetail = () => {
 
   const handleDelist = async () => {
     try {
-      const response = await axios.get(
-        DELIST + currentUser.id + "/" + course.id
-      );
+      console.log("unenroll deneme");
     } catch (error) {
       console.log(error);
     }
@@ -96,12 +81,12 @@ const CourseDetail = () => {
                     </a>
                   </h2>
                   {isEnrolled ? (
-                    <button className="enrollButton" onClick={handleEnroll}>
-                      KAYDOL
-                    </button>
-                  ) : (
                     <button className="delistButton" onClick={handleDelist}>
                       KAYDINI SİL
+                    </button>
+                  ) : (
+                    <button className="enrollButton" onClick={handleEnroll}>
+                      KAYDOL
                     </button>
                   )}
                 </>
