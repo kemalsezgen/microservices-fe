@@ -6,14 +6,17 @@ import { useNavigate } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { loginStart, loginSuccess, loginFailed } from '../redux/userSlice';
 
+import { REGISTER } from '../api.js'
+
 const Register = () => {
 
   const [name, setName] = useState('');
   const [surname, setSurname] = useState('');
   const [username, setUsername] = useState('');
-  const [type, setType] = useState('1');
+  const [role_id, setRoleId] = useState(1);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [fullname, setFullname] = useState(name+" "+surname);
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -22,8 +25,8 @@ const Register = () => {
     e.preventDefault();
     dispatch(loginStart());
     try {
-      //const response = await axios.post('/auth/register', { name, surname, username, type, email, password });
-      dispatch(loginSuccess({name, surname, username, type, email, password}));
+      const response = await axios.post(REGISTER, {username, password, email, fullname, role_id});
+      dispatch(loginSuccess(response.data));
       navigate('/');
     } catch (error) {
       dispatch(loginFailed());
@@ -50,9 +53,9 @@ const Register = () => {
           </div>
 
           <div className='formInput'>
-            <select value={type} name="type" onChange={e => setType(e.target.value)}>
-              <option value="1">Member</option>
-              <option value="2">Instructor</option>
+            <select value={role_id} name="type" onChange={e => setRoleId(e.target.value)}>
+              <option value={1}>Student</option>
+              <option value={2}>Instructor</option>
             </select>
           </div>
 

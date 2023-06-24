@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import axios from "axios";
 
 import Login from "./Login.js";
 import Course from "../components/Course";
+import {GET_ALL_COURSE} from "../api.js"
 
 const Home = () => {
   const { currentUser } = useSelector((state) => state.user);
@@ -13,7 +15,8 @@ const Home = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // const allCourses = await axios.get("http://localhost:5000/courses");
+        const allCourses = await axios.get(GET_ALL_COURSE);
+        /*
         const allCourses = [
           {
             id: "1",
@@ -93,8 +96,8 @@ const Home = () => {
             insturcor: "kemalsezgen",
             rate: "5"
           },
-        ];
-        setCourses(allCourses);
+        ]; */
+        setCourses(allCourses.data);
         setLoading(false);
       } catch (err) {
         console.log("error", err);

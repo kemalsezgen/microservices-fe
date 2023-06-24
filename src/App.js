@@ -9,6 +9,7 @@ import Login from "./pages/Login.js";
 import Register from "./pages/Register.js";
 import CourseDetail from "./pages/CourseDetail.js";
 import AboutUs from './pages/AboutUs';
+import UploadCourse from './pages/UploadCourse';
 
 //components
 import Navbar from "./components/Navbar";
@@ -35,7 +36,8 @@ const router = createBrowserRouter([
       { path: "/signout", element: <Login />},
       { path: "/register", element: <Register />},
       { path: "/course/:id", element: <CourseDetail />},
-      { path: "/about", element: <AboutUs />}
+      { path: "/about", element: <AboutUs />},
+      { path: "/upload", element: <UploadCourse />}
     ]
   }
 ])
