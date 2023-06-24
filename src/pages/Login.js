@@ -20,7 +20,7 @@ const Login = () => {
     dispatch(loginStart());
     try {
       const response = await axios.post(LOGIN, { email, password });
-      dispatch(loginSuccess(response));
+      dispatch(loginSuccess(response.data));
       navigate("/");
     } catch (error) {
       dispatch(loginFailed());

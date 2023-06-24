@@ -99,7 +99,7 @@ const CourseDetail = () => {
                 src={
                   course && course.image
                     ? course.image
-                    : "https://images.unsplash.com/photo-1620371350502-999e9a7d80a4?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=740&q=80"
+                    : "https://upload.wikimedia.org/wikipedia/commons/thumb/a/a7/React-icon.svg/1200px-React-icon.svg.png"
                 }
                 alt="course"
               ></img>
